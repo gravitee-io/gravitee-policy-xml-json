@@ -1,21 +1,26 @@
 = XML to JSON Transformation Policy
 
-https://github.com/gravitee-io/gravitee-policy-xml-json[Source code],
-image:http://build.gravitee.io/jenkins/buildStatus/icon?job=gravitee-policy-xml-json["Build status", link="http://build.gravitee.io/jenkins/job/gravitee-policy-xml-json/"]
+ifdef::env-github[]
+image:https://img.shields.io/github/watchers/gravitee-io/gravitee-policy-xml-json.svg?style=social&maxAge=2592000)["GitHub", link="https://github.com/gravitee-io/gravitee-policy-xml-json"]
+image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-xml-json/master["Build status", link="https://ci.gravitee.io/job/gravitee-io/job/gravitee-policy-xml-json/"]
+image:https://badges.gitter.im/Join Chat.svg["Gitter", link="https://gitter.im/gravitee-io/gravitee-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+endif::[]
 
 == Scope
 
+[cols="2*", options="header"]
 |===
-|onRequest |onResponse
+^|onRequest
+^|onResponse
 
-|
-|
+^.^| X
+^.^| X
 
 |===
 
 == Description
 
-Todo
+XML to JSON Transformation policy lets you convert in a very simple way an XML content to a JSON content.
 
 == Configuration
 
@@ -24,11 +29,11 @@ You can configure the policy with the following options :
 |===
 |Property |Required |Description |Type |Default
 
-|Todo
-|Todo
-|Todo
-|Todo
-|_todo_
+.^|scope
+^.^|X
+|The execution scope (`request` or `response`).
+^.^|string
+^.^|`RESPONSE`
 
 |===
 
@@ -37,6 +42,16 @@ You can configure the policy with the following options :
 .Sample
 ----
 "xml-json": {
-  "todo": true
+    "scope": "RESPONSE"
 }
 ----
+
+== Http Status Code
+
+|===
+|Code |Message
+
+.^| ```500```
+| The transformation can not be executed properly.
+
+|===

@@ -16,33 +16,69 @@
 package io.gravitee.policy.xml2json;
 
 import io.gravitee.common.http.MediaType;
+import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
 import io.gravitee.gateway.api.buffer.Buffer;
-import io.gravitee.gateway.api.http.stream.TransformableStreamBuilder;
+import io.gravitee.gateway.api.http.stream.TransformableRequestStreamBuilder;
+import io.gravitee.gateway.api.http.stream.TransformableResponseStreamBuilder;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.gateway.api.stream.exception.TransformationException;
+import io.gravitee.policy.api.annotations.OnRequestContent;
 import io.gravitee.policy.api.annotations.OnResponseContent;
-import io.gravitee.policy.xml2json.transformer.JSONException;
+import io.gravitee.policy.xml2json.configuration.PolicyScope;
+import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.policy.xml2json.transformer.XML;
 
+import java.util.function.Function;
+
 /**
- * @author David BRASSELY (david at gravitee.io)
+ * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
 public class XmlToJsonTransformationPolicy {
 
+    /**
+     * XML to Json transformation configuration
+     */
+    private final XmlToJsonTransformationPolicyConfiguration xmlToJsonTransformationPolicyConfiguration;
+
+    public XmlToJsonTransformationPolicy(final XmlToJsonTransformationPolicyConfiguration xmlToJsonTransformationPolicyConfiguration) {
+        this.xmlToJsonTransformationPolicyConfiguration = xmlToJsonTransformationPolicyConfiguration;
+    }
+
     @OnResponseContent
     public ReadWriteStream onResponseContent(Response response) {
-        return TransformableStreamBuilder
-                .on(response)
-                .contentType(MediaType.APPLICATION_JSON)
-                .transform(input -> {
-                    try {
-                        return Buffer.buffer(XML.toJSONObject(input.toString()).toString());
-                    } catch (JSONException ex) {
-                        throw new TransformationException("Unable to transform into JSON: " + ex.getMessage(), ex);
-                    }
-                })
-                .build();
+        if (xmlToJsonTransformationPolicyConfiguration.getScope() == null || xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
+            return TransformableResponseStreamBuilder
+                    .on(response)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .transform(map())
+                    .build();
+        }
+
+        return null;
+    }
+
+    @OnRequestContent
+    public ReadWriteStream onRequestContent(Request request) {
+        if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
+            return TransformableRequestStreamBuilder
+                    .on(request)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .transform(map())
+                    .build();
+        }
+
+        return null;
+    }
+
+    Function<Buffer, Buffer> map() {
+        return input -> {
+            try {
+                return Buffer.buffer(XML.toJSONObject(input.toString()).toString());
+            } catch (Exception ex) {
+                throw new TransformationException("Unable to transform XML into JSON: " + ex.getMessage(), ex);
+            }
+        };
     }
 }
