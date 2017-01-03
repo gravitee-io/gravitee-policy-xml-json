@@ -37,6 +37,8 @@ import java.util.function.Function;
  */
 public class XmlToJsonTransformationPolicy {
 
+    private final static String APPLICATION_JSON = MediaType.APPLICATION_JSON + "; charset=UTF-8";
+
     /**
      * XML to Json transformation configuration
      */
@@ -51,7 +53,7 @@ public class XmlToJsonTransformationPolicy {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == null || xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
             return TransformableResponseStreamBuilder
                     .on(response)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .transform(map())
                     .build();
         }
@@ -64,7 +66,7 @@ public class XmlToJsonTransformationPolicy {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
             return TransformableRequestStreamBuilder
                     .on(request)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .transform(map())
                     .build();
         }
