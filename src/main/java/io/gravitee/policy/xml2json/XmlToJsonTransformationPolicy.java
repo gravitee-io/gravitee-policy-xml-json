@@ -15,6 +15,7 @@
  */
 package io.gravitee.policy.xml2json;
 
+import io.gravitee.common.http.HttpHeaders;
 import io.gravitee.common.http.MediaType;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
@@ -29,6 +30,7 @@ import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.policy.xml2json.transformer.XML;
 
+import java.nio.charset.Charset;
 import java.util.function.Function;
 
 /**
@@ -37,7 +39,9 @@ import java.util.function.Function;
  */
 public class XmlToJsonTransformationPolicy {
 
+
     private final static String APPLICATION_JSON = MediaType.APPLICATION_JSON + "; charset=UTF-8";
+    private static final String UTF8_CHARSET_NAME = "UTF-8";
 
     /**
      * XML to Json transformation configuration
@@ -51,10 +55,13 @@ public class XmlToJsonTransformationPolicy {
     @OnResponseContent
     public ReadWriteStream onResponseContent(Response response) {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == null || xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
+
+            Charset charset = extractCharsetFromContentType(response.headers().getFirst(HttpHeaders.CONTENT_TYPE));
+
             return TransformableResponseStreamBuilder
                     .on(response)
                     .contentType(APPLICATION_JSON)
-                    .transform(map())
+                    .transform(map(charset))
                     .build();
         }
 
@@ -64,20 +71,47 @@ public class XmlToJsonTransformationPolicy {
     @OnRequestContent
     public ReadWriteStream onRequestContent(Request request) {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
+            Charset charset = extractCharsetFromContentType(request.headers().getFirst(HttpHeaders.CONTENT_TYPE));
+
             return TransformableRequestStreamBuilder
                     .on(request)
                     .contentType(APPLICATION_JSON)
-                    .transform(map())
+                    .transform(map(charset))
                     .build();
         }
 
         return null;
     }
 
-    Function<Buffer, Buffer> map() {
+    Charset extractCharsetFromContentType(String contentType){
+
+        String charsetName = UTF8_CHARSET_NAME;
+        String CHARSET_TAG = "charset=";
+        String CONTENT_TYPE_HEADER_DELIMITER = ";";
+
+        if(contentType.contains(CHARSET_TAG)) {
+            charsetName = contentType.split(CHARSET_TAG)[1].split(CONTENT_TYPE_HEADER_DELIMITER)[0];
+        }
+
+        return (charsetName != null && Charset.isSupported(charsetName)) ? Charset.forName(charsetName) : Charset.defaultCharset();
+
+    }
+
+    Function<Buffer, Buffer> map(Charset charset) {
         return input -> {
             try {
-                return Buffer.buffer(XML.toJSONObject(input.toString()).toString());
+                String UTF8ConvertedString = null;
+
+                // If necessary convert to UTF-8
+                if(charset.name().equals(UTF8_CHARSET_NAME)){
+                    UTF8ConvertedString = new String(input.toString());
+                }else{
+                    UTF8ConvertedString = new String(input.toString(charset).getBytes(UTF8_CHARSET_NAME));
+                }
+
+                // Perform XML to Json in UTF8 and return output
+                return Buffer.buffer(XML.toJSONObject(UTF8ConvertedString).toString());
+
             } catch (Exception ex) {
                 throw new TransformationException("Unable to transform XML into JSON: " + ex.getMessage(), ex);
             }
