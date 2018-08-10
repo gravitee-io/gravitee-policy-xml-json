@@ -10,8 +10,8 @@ endif::[]
 
 [cols="2*", options="header"]
 |===
-^|onRequest
-^|onResponse
+^|onRequestContent
+^|onResponseContent
 
 ^.^| X
 ^.^| X
