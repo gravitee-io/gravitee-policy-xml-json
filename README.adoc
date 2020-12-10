@@ -1,4 +1,4 @@
-= XML to JSON Transformation Policy
+= XML to JSON transformation policy
 
 ifdef::env-github[]
 image:https://img.shields.io/github/watchers/gravitee-io/gravitee-policy-xml-json.svg?style=social&maxAge=2592000)["GitHub", link="https://github.com/gravitee-io/gravitee-policy-xml-json"]
@@ -6,7 +6,7 @@ image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-xm
 image:https://badges.gitter.im/Join Chat.svg["Gitter", link="https://gitter.im/gravitee-io/gravitee-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
 endif::[]
 
-== Scope
+== Phase
 
 [cols="2*", options="header"]
 |===
@@ -20,11 +20,11 @@ endif::[]
 
 == Description
 
-XML to JSON Transformation policy lets you convert in a very simple way an XML content to a JSON content.
+You can use the `xml-json` policy to transform XML content to JSON content.
 
 == Configuration
 
-You can configure the policy with the following options :
+You can configure the policy with the following options:
 
 |===
 |Property |Required |Description |Type |Default
@@ -37,21 +37,23 @@ You can configure the policy with the following options :
 
 |===
 
+== Example
 
 [source, json]
-.Sample
 ----
 "xml-json": {
     "scope": "RESPONSE"
 }
 ----
 
-== Http Status Code
+== Errors
+
+=== HTTP status code
 
 |===
 |Code |Message
 
 .^| ```500```
-| The transformation can not be executed properly.
+| The transformation cannot be executed properly
 
 |===
