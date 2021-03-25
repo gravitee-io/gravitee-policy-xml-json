@@ -22,6 +22,10 @@ endif::[]
 
 You can use the `xml-json` policy to transform XML content to JSON content.
 
+=== Policy identifier
+
+You can enable or disable the policy with policy identifier `xml-json`.
+
 == Configuration
 
 You can configure the policy with the following options:
