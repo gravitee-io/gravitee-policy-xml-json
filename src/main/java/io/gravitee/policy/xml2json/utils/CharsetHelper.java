@@ -15,6 +15,9 @@
  */
 package io.gravitee.policy.xml2json.utils;
 
+import io.gravitee.gateway.api.http.HttpHeaderNames;
+import io.gravitee.gateway.api.http.HttpHeaders;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
@@ -28,6 +31,10 @@ public class CharsetHelper {
     private final static Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
     private final static String CHARSET_TAG = "charset=";
     private final static Pattern CHARSET_PATTERN = Pattern.compile(Pattern.quote(CHARSET_TAG), Pattern.CASE_INSENSITIVE);
+
+    public static Charset extractCharset(HttpHeaders httpHeaders) {
+        return extractFromContentType(httpHeaders.get(HttpHeaderNames.CONTENT_TYPE));
+    }
 
     /**
      * Extract the charset from media-type as per https://tools.ietf.org/html/rfc7231#section-3.1.1.1
