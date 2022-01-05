@@ -54,7 +54,7 @@ public class XmlToJsonTransformationPolicy {
     @OnResponseContent
     public ReadWriteStream onResponseContent(Response response) {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == null || xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
-            Charset charset = CharsetHelper.extractFromContentType(response.headers().contentType());
+            Charset charset = CharsetHelper.extractCharset(response.headers());
 
             return TransformableResponseStreamBuilder
                     .on(response)
@@ -69,7 +69,7 @@ public class XmlToJsonTransformationPolicy {
     @OnRequestContent
     public ReadWriteStream onRequestContent(Request request) {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
-            Charset charset = CharsetHelper.extractFromContentType(request.headers().contentType());
+            Charset charset = CharsetHelper.extractCharset(request.headers());
 
             return TransformableRequestStreamBuilder
                     .on(request)
