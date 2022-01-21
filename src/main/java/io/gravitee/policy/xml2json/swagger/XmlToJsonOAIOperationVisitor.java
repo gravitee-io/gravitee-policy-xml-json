@@ -26,7 +26,6 @@ import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +37,8 @@ public class XmlToJsonOAIOperationVisitor implements OAIOperationVisitor {
 
     public static final String SOAP_EXTENSION_ENVELOPE = "x-graviteeio-soap-envelope";
 
-    private final ObjectMapper mapper  = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
+
     {
         mapper.configure(JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS, true);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

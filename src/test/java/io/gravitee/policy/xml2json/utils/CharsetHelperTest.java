@@ -16,11 +16,10 @@
 package io.gravitee.policy.xml2json.utils;
 
 import io.gravitee.common.http.MediaType;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
