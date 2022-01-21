@@ -19,7 +19,6 @@ import io.gravitee.policy.api.swagger.Policy;
 import io.gravitee.policy.api.swagger.v2.SwaggerOperationVisitor;
 import io.swagger.models.Operation;
 import io.swagger.models.Swagger;
-
 import java.util.Optional;
 
 /**
@@ -27,6 +26,7 @@ import java.util.Optional;
  * @author GraviteeSource Team
  */
 public class XmlToJsonSwaggerOperationVisitor implements SwaggerOperationVisitor {
+
     @Override
     public boolean display() {
         return false;

@@ -15,23 +15,22 @@
  */
 package io.gravitee.policy.xml2json.swagger;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.gravitee.policy.api.swagger.Policy;
 import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * @author Eric LELEU (eric.leleu at graviteesource.com)
@@ -39,6 +38,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class XmlToJsonOAIOperationVisitorTest {
+
     protected XmlToJsonOAIOperationVisitor visitor = new XmlToJsonOAIOperationVisitor();
 
     @Test
@@ -70,7 +70,8 @@ public class XmlToJsonOAIOperationVisitorTest {
         assertTrue(policy.isPresent());
         String configuration = policy.get().getConfiguration();
         assertNotNull(configuration);
-        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper().readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
+        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper()
+            .readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
         assertEquals(PolicyScope.RESPONSE, readConfig.getScope());
     }
 }
