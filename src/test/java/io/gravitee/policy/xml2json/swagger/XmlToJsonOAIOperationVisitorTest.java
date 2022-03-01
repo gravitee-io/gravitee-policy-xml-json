@@ -21,15 +21,17 @@ import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +39,7 @@ import static org.mockito.Mockito.when;
  * @author Eric LELEU (eric.leleu at graviteesource.com)
  * @author GraviteeSource Team
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class XmlToJsonOAIOperationVisitorTest {
     protected XmlToJsonOAIOperationVisitor visitor = new XmlToJsonOAIOperationVisitor();
 
@@ -46,7 +48,7 @@ public class XmlToJsonOAIOperationVisitorTest {
         Operation operationMock = mock(Operation.class);
         when(operationMock.getExtensions()).thenReturn(null);
         Optional<Policy> policy = visitor.visit(mock(OpenAPI.class), operationMock);
-        assertFalse(policy.isPresent());
+        assertThat(policy).isEmpty();
     }
 
     @Test
@@ -57,7 +59,7 @@ public class XmlToJsonOAIOperationVisitorTest {
         when(operationMock.getExtensions()).thenReturn(extensions);
         when(operationMock.getExtensions()).thenReturn(null);
         Optional<Policy> policy = visitor.visit(mock(OpenAPI.class), operationMock);
-        assertFalse(policy.isPresent());
+        assertThat(policy).isEmpty();
     }
 
     @Test
@@ -67,10 +69,10 @@ public class XmlToJsonOAIOperationVisitorTest {
         Operation operationMock = mock(Operation.class);
         when(operationMock.getExtensions()).thenReturn(extensions);
         Optional<Policy> policy = visitor.visit(mock(OpenAPI.class), operationMock);
-        assertTrue(policy.isPresent());
+        assertThat(policy).isNotEmpty();
         String configuration = policy.get().getConfiguration();
-        assertNotNull(configuration);
+        assertThat(configuration).isNotNull();
         XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper().readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
-        assertEquals(PolicyScope.RESPONSE, readConfig.getScope());
+        assertThat(readConfig.getScope()).isEqualTo(PolicyScope.RESPONSE);
     }
 }
