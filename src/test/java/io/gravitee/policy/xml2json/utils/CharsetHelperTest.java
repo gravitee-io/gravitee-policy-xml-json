@@ -15,14 +15,13 @@
  */
 package io.gravitee.policy.xml2json.utils;
 
-import io.gravitee.common.http.MediaType;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.gravitee.common.http.MediaType;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
