@@ -25,9 +25,9 @@ import java.util.regex.Pattern;
  */
 public class CharsetHelper {
 
-    private final static Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
-    private final static String CHARSET_TAG = "charset=";
-    private final static Pattern CHARSET_PATTERN = Pattern.compile(Pattern.quote(CHARSET_TAG), Pattern.CASE_INSENSITIVE);
+    private static final Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
+    private static final String CHARSET_TAG = "charset=";
+    private static final Pattern CHARSET_PATTERN = Pattern.compile(Pattern.quote(CHARSET_TAG), Pattern.CASE_INSENSITIVE);
 
     /**
      * Extract the charset from media-type as per https://tools.ietf.org/html/rfc7231#section-3.1.1.1
@@ -36,7 +36,7 @@ public class CharsetHelper {
      * @return
      */
     public static Charset extractFromContentType(String mediaType) {
-        if (mediaType == null || ! CHARSET_PATTERN.matcher(mediaType).find()) {
+        if (mediaType == null || !CHARSET_PATTERN.matcher(mediaType).find()) {
             return UTF_8_CHARSET;
         }
 

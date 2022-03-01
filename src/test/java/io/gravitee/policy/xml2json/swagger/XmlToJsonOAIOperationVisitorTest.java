@@ -15,25 +15,24 @@
  */
 package io.gravitee.policy.xml2json.swagger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.gravitee.policy.api.swagger.Policy;
 import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Eric LELEU (eric.leleu at graviteesource.com)
@@ -41,6 +40,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 public class XmlToJsonOAIOperationVisitorTest {
+
     protected XmlToJsonOAIOperationVisitor visitor = new XmlToJsonOAIOperationVisitor();
 
     @Test
@@ -72,7 +72,8 @@ public class XmlToJsonOAIOperationVisitorTest {
         assertThat(policy).isNotEmpty();
         String configuration = policy.get().getConfiguration();
         assertThat(configuration).isNotNull();
-        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper().readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
+        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper()
+            .readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
         assertThat(readConfig.getScope()).isEqualTo(PolicyScope.RESPONSE);
     }
 }

@@ -30,7 +30,6 @@ import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.policy.xml2json.transformer.XML;
 import io.gravitee.policy.xml2json.utils.CharsetHelper;
-
 import java.nio.charset.Charset;
 import java.util.function.Function;
 
@@ -40,8 +39,8 @@ import java.util.function.Function;
  */
 public class XmlToJsonTransformationPolicy {
 
-    private final static String UTF8_CHARSET_NAME = "UTF-8";
-    final static String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
+    private static final String UTF8_CHARSET_NAME = "UTF-8";
+    static final String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
 
     /**
      * XML to Json transformation configuration
@@ -54,15 +53,18 @@ public class XmlToJsonTransformationPolicy {
 
     @OnResponseContent
     public ReadWriteStream onResponseContent(Response response, PolicyChain chain) {
-        if (xmlToJsonTransformationPolicyConfiguration.getScope() == null || xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE) {
+        if (
+            xmlToJsonTransformationPolicyConfiguration.getScope() == null ||
+            xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE
+        ) {
             Charset charset = CharsetHelper.extractFromContentType(response.headers().contentType());
 
             return TransformableResponseStreamBuilder
-                    .on(response)
-                    .chain(chain)
-                    .contentType(APPLICATION_JSON)
-                    .transform(map(charset))
-                    .build();
+                .on(response)
+                .chain(chain)
+                .contentType(APPLICATION_JSON)
+                .transform(map(charset))
+                .build();
         }
 
         return null;
@@ -73,12 +75,7 @@ public class XmlToJsonTransformationPolicy {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
             Charset charset = CharsetHelper.extractFromContentType(request.headers().contentType());
 
-            return TransformableRequestStreamBuilder
-                    .on(request)
-                    .chain(chain)
-                    .contentType(APPLICATION_JSON)
-                    .transform(map(charset))
-                    .build();
+            return TransformableRequestStreamBuilder.on(request).chain(chain).contentType(APPLICATION_JSON).transform(map(charset)).build();
         }
 
         return null;
