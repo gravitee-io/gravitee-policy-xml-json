@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.1...1.8.2) (2023-03-20)
+
+
+### Bug Fixes
+
+* fallback to default charset when specified one  is invalid ([764e14c](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/764e14c1e56aa96e7db4a00a2f290da4f6ccb984))
+
 ## [1.8.1](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.0...1.8.1) (2022-04-28)
 
 
