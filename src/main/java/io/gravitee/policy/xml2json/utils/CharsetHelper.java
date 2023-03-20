@@ -49,6 +49,10 @@ public class CharsetHelper {
         String charsetName = mediaType.substring(mediaType.lastIndexOf('=') + 1);
         charsetName = charsetName.replace("\"", "");
 
-        return Charset.isSupported(charsetName) ? Charset.forName(charsetName) : Charset.defaultCharset();
+        try {
+            return Charset.isSupported(charsetName) ? Charset.forName(charsetName) : Charset.defaultCharset();
+        } catch (Exception e) {
+            return Charset.defaultCharset();
+        }
     }
 }
