@@ -40,6 +40,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -163,6 +165,75 @@ class XmlToJsonTransformationPolicyTest {
         assertThat(response.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
         assertThat(response.headers().names()).doesNotContain(HttpHeaderNames.CONTENT_LENGTH);
         verify(policyChain, times(1)).streamFailWith(any());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Should not fail when invalid charset is specified on request content")
+    @ValueSource(
+        strings = {
+            "wrong",
+            "application/soap+xml; charset=utf-8;",
+            "  ",
+            "application/soap+xml; charset=utf-8,",
+            "application/soap+xml; charset=utf-8",
+        }
+    )
+    public void shouldNotFailWhenInvalidCharsetIsSpecifiedOnRequestContent(String contentType) throws Exception {
+        String input = loadResource("/io/gravitee/policy/xml2json/input.xml");
+        String expected = loadResource("/io/gravitee/policy/xml2json/expected.json");
+
+        // Prepare context
+        final HttpHeaders headers = HttpHeaders.create();
+        headers.set(HttpHeaderNames.CONTENT_TYPE, contentType);
+        when(configuration.getScope()).thenReturn(PolicyScope.REQUEST);
+        when(request.headers()).thenReturn(headers);
+
+        final ReadWriteStream result = cut.onRequestContent(request, policyChain);
+        assertThat(result).isNotNull();
+        result.bodyHandler(resultBody -> assertResultingJsonObjectsAreEquals(expected, resultBody));
+
+        result.write(Buffer.buffer(input));
+        result.end();
+
+        assertThat(request.headers().names()).contains(HttpHeaderNames.CONTENT_TYPE);
+        assertThat(request.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0)).isEqualTo(XmlToJsonTransformationPolicy.APPLICATION_JSON);
+        assertThat(request.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
+        assertThat(request.headers().names()).contains(HttpHeaderNames.CONTENT_LENGTH);
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "wrong",
+            "application/soap+xml; charset=utf-8;",
+            "  ",
+            "application/soap+xml; charset=utf-8,",
+            "application/soap+xml; charset=utf-8",
+        }
+    )
+    @DisplayName("Should not fail when invalid charset is specified on response content")
+    public void shouldNotFailWhenInvalidCharsetIsSpecifiedOnResponseContent(String contentType) throws Exception {
+        String input = loadResource("/io/gravitee/policy/xml2json/input.xml");
+        String expected = loadResource("/io/gravitee/policy/xml2json/expected.json");
+
+        // Prepare context
+        final HttpHeaders headers = HttpHeaders.create();
+        headers.set(HttpHeaderNames.CONTENT_TYPE, contentType);
+        when(configuration.getScope()).thenReturn(PolicyScope.RESPONSE);
+        when(response.headers()).thenReturn(headers);
+
+        final ReadWriteStream result = cut.onResponseContent(response, policyChain);
+        assertThat(result).isNotNull();
+        result.bodyHandler(resultBody -> assertResultingJsonObjectsAreEquals(expected, resultBody));
+
+        result.write(Buffer.buffer(input));
+        result.end();
+
+        assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_TYPE);
+        assertThat(response.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0))
+            .isEqualTo(XmlToJsonTransformationPolicy.APPLICATION_JSON);
+        assertThat(response.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
+        assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_LENGTH);
     }
 
     private void assertResultingJsonObjectsAreEquals(String expected, Object resultBody) {
