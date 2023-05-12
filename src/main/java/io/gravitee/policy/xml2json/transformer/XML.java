@@ -151,7 +151,10 @@ public class XML {
      * @return true if the close tag is processed.
      * @throws JSONException
      */
-    private static boolean parse(XMLTokener x, JSONObject context, String name) throws JSONException {
+    private static boolean parse(XMLTokener x, JSONObject context, String name, int depth, int maxDepth) throws JSONException {
+        if (depth > maxDepth && maxDepth > -1) {
+            throw new IllegalArgumentException("Too many nested objects");
+        }
         char c;
         int i;
         JSONObject jsonobject = null;
@@ -278,7 +281,7 @@ public class XML {
                             }
                         } else if (token == LT) {
                             // Nested element
-                            if (parse(x, jsonobject, tagName)) {
+                            if (parse(x, jsonobject, tagName, depth + 1, maxDepth)) {
                                 if (jsonobject.length() == 0) {
                                     context.accumulate(tagName, "");
                                 } else if (jsonobject.length() == 1 && jsonobject.opt("content") != null) {
@@ -322,14 +325,17 @@ public class XML {
      *
      * @param string
      *            The source string.
+     * @param maxDepth
+     *            Maximum allowed nested objects
+     *
      * @return A JSONObject containing the structured data from the XML string.
      * @throws JSONException
      */
-    public static JSONObject toJSONObject(String string) throws JSONException {
+    public static JSONObject toJSONObject(String string, int maxDepth) throws JSONException {
         JSONObject jo = new JSONObject();
         XMLTokener x = new XMLTokener(string);
         while (x.more() && x.skipPast("<")) {
-            parse(x, jo, null);
+            parse(x, jo, null, 0, maxDepth);
         }
         return jo;
     }
