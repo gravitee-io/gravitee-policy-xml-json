@@ -17,16 +17,19 @@ package io.gravitee.policy.xml2json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.gravitee.gateway.api.ExecutionContext;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
 import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.http.HttpHeaderNames;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
+import io.gravitee.node.api.configuration.Configuration;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
@@ -67,9 +70,22 @@ class XmlToJsonTransformationPolicyTest {
     @Spy
     private Response response;
 
+    @Mock
+    private ExecutionContext executionContext;
+
     @BeforeEach
     public void setUp() {
         cut = new XmlToJsonTransformationPolicy(configuration);
+        final Configuration config = mock(Configuration.class);
+        when(
+            config.getProperty(
+                XmlToJsonTransformationPolicy.POLICY_XML_JSON_MAXDEPTH,
+                Integer.class,
+                XmlToJsonTransformationPolicy.DEFAULT_MAX_DEPH
+            )
+        )
+            .thenReturn(XmlToJsonTransformationPolicy.DEFAULT_MAX_DEPH);
+        when(executionContext.getComponent(Configuration.class)).thenReturn(config);
     }
 
     @Test
@@ -82,7 +98,7 @@ class XmlToJsonTransformationPolicyTest {
         when(configuration.getScope()).thenReturn(PolicyScope.REQUEST);
         when(request.headers()).thenReturn(HttpHeaders.create());
 
-        final ReadWriteStream result = cut.onRequestContent(request, policyChain);
+        final ReadWriteStream result = cut.onRequestContent(request, policyChain, executionContext);
         assertThat(result).isNotNull();
         result.bodyHandler(resultBody -> {
             assertResultingJsonObjectsAreEquals(expected, resultBody);
@@ -107,7 +123,30 @@ class XmlToJsonTransformationPolicyTest {
         when(request.headers()).thenReturn(HttpHeaders.create());
         when(request.metrics()).thenReturn(Metrics.on(Instant.now().toEpochMilli()).build());
 
-        final ReadWriteStream result = cut.onRequestContent(request, policyChain);
+        final ReadWriteStream result = cut.onRequestContent(request, policyChain, executionContext);
+        assertThat(result).isNotNull();
+
+        result.write(Buffer.buffer(input));
+        result.end();
+
+        assertThat(request.headers().names()).doesNotContain(HttpHeaderNames.CONTENT_TYPE);
+        assertThat(request.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
+        assertThat(request.headers().names()).doesNotContain(HttpHeaderNames.CONTENT_LENGTH);
+        assertThat(request.metrics().getMessage()).contains("Unable to transform XML into JSON:");
+        verify(policyChain, times(1)).streamFailWith(any());
+    }
+
+    @Test
+    @DisplayName("Should reject too deep nested objects")
+    public void shouldRejectTooDeepNestedObject() throws Exception {
+        String input = loadResource("/io/gravitee/policy/xml2json/invalid-nested-object.xml");
+
+        // Prepare context
+        when(configuration.getScope()).thenReturn(PolicyScope.REQUEST);
+        when(request.headers()).thenReturn(HttpHeaders.create());
+        when(request.metrics()).thenReturn(Metrics.on(Instant.now().toEpochMilli()).build());
+
+        final ReadWriteStream result = cut.onRequestContent(request, policyChain, executionContext);
         assertThat(result).isNotNull();
 
         result.write(Buffer.buffer(input));
@@ -130,7 +169,7 @@ class XmlToJsonTransformationPolicyTest {
         when(configuration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(response.headers()).thenReturn(HttpHeaders.create());
 
-        final ReadWriteStream result = cut.onResponseContent(response, policyChain);
+        final ReadWriteStream result = cut.onResponseContent(response, policyChain, executionContext);
         assertThat(result).isNotNull();
         result.bodyHandler(resultBody -> {
             assertResultingJsonObjectsAreEquals(expected, resultBody);
@@ -155,7 +194,7 @@ class XmlToJsonTransformationPolicyTest {
         when(configuration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(response.headers()).thenReturn(HttpHeaders.create());
 
-        final ReadWriteStream result = cut.onResponseContent(response, policyChain);
+        final ReadWriteStream result = cut.onResponseContent(response, policyChain, executionContext);
         assertThat(result).isNotNull();
 
         result.write(Buffer.buffer(input));
@@ -188,7 +227,7 @@ class XmlToJsonTransformationPolicyTest {
         when(configuration.getScope()).thenReturn(PolicyScope.REQUEST);
         when(request.headers()).thenReturn(headers);
 
-        final ReadWriteStream result = cut.onRequestContent(request, policyChain);
+        final ReadWriteStream result = cut.onRequestContent(request, policyChain, executionContext);
         assertThat(result).isNotNull();
         result.bodyHandler(resultBody -> assertResultingJsonObjectsAreEquals(expected, resultBody));
 
@@ -222,7 +261,7 @@ class XmlToJsonTransformationPolicyTest {
         when(configuration.getScope()).thenReturn(PolicyScope.RESPONSE);
         when(response.headers()).thenReturn(headers);
 
-        final ReadWriteStream result = cut.onResponseContent(response, policyChain);
+        final ReadWriteStream result = cut.onResponseContent(response, policyChain, executionContext);
         assertThat(result).isNotNull();
         result.bodyHandler(resultBody -> assertResultingJsonObjectsAreEquals(expected, resultBody));
 
