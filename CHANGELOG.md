@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.2...1.8.3) (2023-05-31)
+
+
+### Bug Fixes
+
+* reject too deep nested object ([9a2f4f4](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/9a2f4f4e177196fefd08ad9eac7320edaf39709c))
+
 ## [1.8.2](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.1...1.8.2) (2023-03-20)
 
 
