@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.3...2.0.0) (2023-06-19)
+
+
+### Features
+
+* convert to EE plugin ([dbbc765](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/dbbc765c4e9f46fa981e9c1655b70880463a19c1))
+
+
+### BREAKING CHANGES
+
+* user needs a valid license to use the plugin
+
 ## [1.8.3](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.2...1.8.3) (2023-05-31)
 
 
