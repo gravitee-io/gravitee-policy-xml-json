@@ -13,17 +13,20 @@
     <parent>
         <groupId>io.gravitee</groupId>
         <artifactId>gravitee-parent</artifactId>
-        <version>21.0.0</version>
+        <version>21.0.1</version>
     </parent>
 
     <properties>
-        <gravitee-gateway-buffer.version>3.18.0</gravitee-gateway-buffer.version>
-        <gravitee-bom.version>4.0.0</gravitee-bom.version>
-        <gravitee-node.version>1.24.8</gravitee-node.version>
-        <gravitee-gateway-api.version>1.34.2</gravitee-gateway-api.version>
+        <gravitee-apim.version>4.0.0-SNAPSHOT</gravitee-apim.version>
+        <gravitee-bom.version>5.0.0</gravitee-bom.version>
+        <gravitee-node.version>3.1.0-alpha.11</gravitee-node.version>
+        <gravitee-gateway-api.version>3.0.0-alpha.6</gravitee-gateway-api.version>
         <gravitee-policy-api.version>1.11.0</gravitee-policy-api.version>
-        <gravitee-common.version>1.27.0</gravitee-common.version>
-        <gravitee-expression-language.version>1.9.7</gravitee-expression-language.version>
+        <gravitee-common.version>2.1.1</gravitee-common.version>
+        <gravitee-expression-language.version>2.2.1</gravitee-expression-language.version>
+        <gravitee-entrypoint-http-post.version>1.0.0-alpha.1</gravitee-entrypoint-http-post.version>
+        <gravitee-entrypoint-http-get.version>1.0.0-alpha.4</gravitee-entrypoint-http-get.version>
+        <gravitee-reactor-message.version>1.0.0-alpha.8</gravitee-reactor-message.version>
 
         <swagger-parser.version>2.0.14</swagger-parser.version>
         <slf4j.version>1.7.26</slf4j.version>
@@ -105,7 +108,14 @@
         <dependency>
             <groupId>io.gravitee.apim.gateway</groupId>
             <artifactId>gravitee-apim-gateway-buffer</artifactId>
-            <version>${gravitee-gateway-buffer.version}</version>
+            <version>${gravitee-apim.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.gravitee.apim.gateway</groupId>
+            <artifactId>gravitee-apim-gateway-tests-sdk</artifactId>
+            <version>${gravitee-apim.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -142,6 +152,42 @@
             <groupId>io.gravitee.el</groupId>
             <artifactId>gravitee-expression-language</artifactId>
             <version>${gravitee-expression-language.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.gravitee.apim.plugin.entrypoint</groupId>
+            <artifactId>gravitee-apim-plugin-entrypoint-http-proxy</artifactId>
+            <version>${gravitee-apim.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.graviteesource.entrypoint</groupId>
+            <artifactId>gravitee-entrypoint-http-get</artifactId>
+            <version>${gravitee-entrypoint-http-get.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.graviteesource.entrypoint</groupId>
+            <artifactId>gravitee-entrypoint-http-post</artifactId>
+            <version>${gravitee-entrypoint-http-post.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.gravitee.apim.plugin.endpoint</groupId>
+            <artifactId>gravitee-apim-plugin-endpoint-http-proxy</artifactId>
+            <version>${gravitee-apim.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.gravitee.apim.plugin.endpoint</groupId>
+            <artifactId>gravitee-apim-plugin-endpoint-mock</artifactId>
+            <version>${gravitee-apim.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.graviteesource.reactor</groupId>
+            <artifactId>gravitee-reactor-message</artifactId>
+            <version>${gravitee-reactor-message.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

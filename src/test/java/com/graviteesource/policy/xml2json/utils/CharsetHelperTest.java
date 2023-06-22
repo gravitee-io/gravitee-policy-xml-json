@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.gravitee.common.http.MediaType;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
