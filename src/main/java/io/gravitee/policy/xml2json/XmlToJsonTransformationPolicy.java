@@ -15,99 +15,122 @@
  */
 package io.gravitee.policy.xml2json;
 
-import io.gravitee.common.http.MediaType;
-import io.gravitee.gateway.api.ExecutionContext;
-import io.gravitee.gateway.api.Request;
-import io.gravitee.gateway.api.Response;
+import io.gravitee.common.http.HttpStatusCode;
 import io.gravitee.gateway.api.buffer.Buffer;
-import io.gravitee.gateway.api.http.stream.TransformableRequestStreamBuilder;
-import io.gravitee.gateway.api.http.stream.TransformableResponseStreamBuilder;
-import io.gravitee.gateway.api.stream.ReadWriteStream;
+import io.gravitee.gateway.api.http.HttpHeaderNames;
+import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.exception.TransformationException;
+import io.gravitee.gateway.reactive.api.ExecutionFailure;
+import io.gravitee.gateway.reactive.api.context.GenericExecutionContext;
+import io.gravitee.gateway.reactive.api.context.HttpExecutionContext;
+import io.gravitee.gateway.reactive.api.context.MessageExecutionContext;
+import io.gravitee.gateway.reactive.api.message.Message;
+import io.gravitee.gateway.reactive.api.policy.Policy;
 import io.gravitee.node.api.configuration.Configuration;
-import io.gravitee.policy.api.PolicyChain;
-import io.gravitee.policy.api.annotations.OnRequestContent;
-import io.gravitee.policy.api.annotations.OnResponseContent;
-import io.gravitee.policy.xml2json.configuration.PolicyScope;
+import io.gravitee.policy.v3.xml2json.XmlToJsonTransformationPolicyV3;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.policy.xml2json.transformer.XML;
 import io.gravitee.policy.xml2json.utils.CharsetHelper;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Maybe;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Function;
 
 /**
  * @author David BRASSELY (david.brassely at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class XmlToJsonTransformationPolicy {
+public class XmlToJsonTransformationPolicy extends XmlToJsonTransformationPolicyV3 implements Policy {
 
-    public static final String POLICY_XML_JSON_MAXDEPTH = "policy.xml-json.maxdepth";
-    public static final int DEFAULT_MAX_DEPH = 1000;
-    private static final String UTF8_CHARSET_NAME = "UTF-8";
-    static final String APPLICATION_JSON = MediaType.APPLICATION_JSON + ";charset=" + UTF8_CHARSET_NAME;
+    private static final String INVALID_PAYLOAD_FAILURE_KEY = "XML_INVALID_PAYLOAD";
+    private static final String INVALID_MESSAGE_PAYLOAD_FAILURE_KEY = "XML_INVALID_MESSAGE_PAYLOAD";
 
     private Integer maxDepth;
 
-    /**
-     * XML to Json transformation configuration
-     */
-    private final XmlToJsonTransformationPolicyConfiguration xmlToJsonTransformationPolicyConfiguration;
-
-    public XmlToJsonTransformationPolicy(final XmlToJsonTransformationPolicyConfiguration xmlToJsonTransformationPolicyConfiguration) {
-        this.xmlToJsonTransformationPolicyConfiguration = xmlToJsonTransformationPolicyConfiguration;
+    public XmlToJsonTransformationPolicy(final XmlToJsonTransformationPolicyConfiguration configuration) {
+        super(configuration);
     }
 
-    @OnResponseContent
-    public ReadWriteStream onResponseContent(Response response, PolicyChain chain, ExecutionContext context) {
-        if (
-            xmlToJsonTransformationPolicyConfiguration.getScope() == null ||
-            xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.RESPONSE
-        ) {
-            Charset charset = CharsetHelper.extractCharset(response.headers());
-
-            return TransformableResponseStreamBuilder
-                .on(response)
-                .chain(chain)
-                .contentType(APPLICATION_JSON)
-                .transform(map(charset, getMaxDepth(context)))
-                .build();
-        }
-
-        return null;
+    private static void setContentHeaders(final HttpHeaders headers, final Buffer jsonBuffer) {
+        headers.set(HttpHeaderNames.CONTENT_TYPE, APPLICATION_JSON);
+        headers.set(HttpHeaderNames.CONTENT_LENGTH, Integer.toString(jsonBuffer.length()));
     }
 
-    @OnRequestContent
-    public ReadWriteStream onRequestContent(Request request, PolicyChain chain, ExecutionContext context) {
-        if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
-            Charset charset = CharsetHelper.extractCharset(request.headers());
-            return TransformableRequestStreamBuilder
-                .on(request)
-                .chain(chain)
-                .contentType(APPLICATION_JSON)
-                .transform(map(charset, getMaxDepth(context)))
-                .build();
-        }
-
-        return null;
+    @Override
+    public String id() {
+        return "xml-json";
     }
 
-    private Function<Buffer, Buffer> map(Charset charset, int depth) {
-        return input -> {
-            try {
-                String encodedPayload = new String(input.toString(charset).getBytes(UTF8_CHARSET_NAME));
-                return Buffer.buffer(XML.toJSONObject(encodedPayload, depth).toString(), UTF8_CHARSET_NAME);
-            } catch (Exception ex) {
-                throw new TransformationException("Unable to transform XML into JSON: " + ex.getMessage(), ex);
-            }
-        };
+    @Override
+    public Completable onRequest(HttpExecutionContext ctx) {
+        return ctx.request().onBody(body -> transformBodyToJson(ctx, body, ctx.request().headers(), HttpStatusCode.BAD_REQUEST_400));
     }
 
-    private int getMaxDepth(ExecutionContext context) {
+    @Override
+    public Completable onResponse(HttpExecutionContext ctx) {
+        return ctx
+            .response()
+            .onBody(body -> transformBodyToJson(ctx, body, ctx.response().headers(), HttpStatusCode.INTERNAL_SERVER_ERROR_500));
+    }
+
+    private Maybe<Buffer> transformBodyToJson(
+        HttpExecutionContext ctx,
+        Maybe<Buffer> bodyUpstream,
+        HttpHeaders headers,
+        int failureHttpCode
+    ) {
+        return bodyUpstream
+            .flatMap(buffer -> transformToJson(buffer, CharsetHelper.extractCharset(headers), getMaxDepth(ctx)))
+            .doOnSuccess(jsonBuffer -> setContentHeaders(headers, jsonBuffer))
+            .onErrorResumeWith(
+                ctx.interruptBodyWith(
+                    new ExecutionFailure(failureHttpCode)
+                        .key(INVALID_PAYLOAD_FAILURE_KEY)
+                        .message("Unable to transform invalid XML to Json")
+                )
+            );
+    }
+
+    @Override
+    public Completable onMessageRequest(MessageExecutionContext ctx) {
+        return ctx
+            .request()
+            .onMessage(message -> transformMessageToJson(ctx, message, ctx.request().headers(), HttpStatusCode.BAD_REQUEST_400));
+    }
+
+    @Override
+    public Completable onMessageResponse(MessageExecutionContext ctx) {
+        return ctx
+            .response()
+            .onMessage(message -> transformMessageToJson(ctx, message, ctx.response().headers(), HttpStatusCode.INTERNAL_SERVER_ERROR_500));
+    }
+
+    private Maybe<Message> transformMessageToJson(MessageExecutionContext ctx, Message message, HttpHeaders headers, int failureHttpCode) {
+        return transformToJson(message.content(), CharsetHelper.extractCharset(headers), getMaxDepth(ctx))
+            .map(message::content)
+            .doOnSuccess(jsonMessage -> setContentHeaders(message.headers(), jsonMessage.content()))
+            .onErrorResumeWith(
+                ctx.interruptMessageWith(
+                    new ExecutionFailure(failureHttpCode)
+                        .key(INVALID_MESSAGE_PAYLOAD_FAILURE_KEY)
+                        .message("Unable to transform invalid XML message to JSON")
+                )
+            );
+    }
+
+    private int getMaxDepth(GenericExecutionContext ctx) {
         if (this.maxDepth == null) {
-            this.maxDepth =
-                context.getComponent(Configuration.class).getProperty(POLICY_XML_JSON_MAXDEPTH, Integer.class, DEFAULT_MAX_DEPH);
+            this.maxDepth = ctx.getComponent(Configuration.class).getProperty(POLICY_XML_JSON_MAXDEPTH, Integer.class, DEFAULT_MAX_DEPH);
         }
-        return maxDepth;
+        return this.maxDepth;
+    }
+
+    private Maybe<Buffer> transformToJson(Buffer buffer, Charset charset, int depth) {
+        try {
+            String encodedPayload = new String(buffer.toString(charset).getBytes(StandardCharsets.UTF_8));
+            return Maybe.just(Buffer.buffer(XML.toJSONObject(encodedPayload, depth).toString(), UTF8_CHARSET_NAME));
+        } catch (Exception e) {
+            return Maybe.error(new TransformationException("Unable to transform XML into JSON:" + e.getMessage(), e));
+        }
     }
 }
