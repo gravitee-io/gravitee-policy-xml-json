@@ -1,3 +1,15 @@
+# [2.0.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.3...2.0.0-alpha.1) (2023-06-23)
+
+
+### Features
+
+* migrate policy to support messages ([295343e](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/295343e5c94898f6c6ced39b0a7e4dcfaf7cd651))
+
+
+### BREAKING CHANGES
+
+* this version is using the latest dependencies introduced by gravitee 4.0
+
 ## [1.8.3](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.2...1.8.3) (2023-05-31)
 
 
