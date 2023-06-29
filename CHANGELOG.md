@@ -1,3 +1,10 @@
+# [2.0.0-alpha.2](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/2.0.0-alpha.1...2.0.0-alpha.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* use new execution engine ([230dcb1](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/230dcb196ca5eb637c27f155ffeda0d196b6a307))
+
 # [2.0.0-alpha.1](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.3...2.0.0-alpha.1) (2023-06-23)
 
 
