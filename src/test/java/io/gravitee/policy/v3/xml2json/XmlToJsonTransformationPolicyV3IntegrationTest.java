@@ -15,13 +15,57 @@
  */
 package io.gravitee.policy.v3.xml2json;
 
+import static io.vertx.core.http.HttpMethod.POST;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.gravitee.apim.gateway.tests.sdk.annotations.DeployApi;
 import io.gravitee.apim.gateway.tests.sdk.annotations.GatewayTest;
-import io.gravitee.apim.gateway.tests.sdk.configuration.GatewayMode;
-import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicyV3CompatibilityIntegrationTest;
+import io.gravitee.definition.model.ExecutionMode;
+import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest;
+import io.vertx.rxjava3.core.buffer.Buffer;
+import io.vertx.rxjava3.core.http.HttpClient;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Yann TAVERNIER (yann.tavernier at graviteesource.com)
  * @author GraviteeSource Team
  */
-@GatewayTest(mode = GatewayMode.V3)
-public class XmlToJsonTransformationPolicyV3IntegrationTest extends XmlToJsonTransformationPolicyV3CompatibilityIntegrationTest {}
+@GatewayTest(v2ExecutionMode = ExecutionMode.V3)
+public class XmlToJsonTransformationPolicyV3IntegrationTest extends XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest {
+
+    @Test
+    @DeployApi("/apis/v2/api-pre.json")
+    void should_return_bad_request_when_posting_invalid_json_to_gateway(HttpClient client) throws InterruptedException {
+        final String input = loadResource("/io/gravitee/policy/xml2json/invalid-input.xml");
+
+        client
+            .rxRequest(POST, "/test")
+            .flatMap(request -> request.rxSend(Buffer.buffer(input)))
+            .flatMapPublisher(response -> {
+                assertThat(response.statusCode()).isEqualTo(500);
+                return response.toFlowable();
+            })
+            .test()
+            .await()
+            .assertComplete()
+            .assertNoErrors();
+    }
+
+    @Test
+    @DeployApi("/apis/v2/api-pre.json")
+    void should_return_internal_error_when_too_many_nested(HttpClient client) throws InterruptedException {
+        final String input = loadResource("/io/gravitee/policy/xml2json/invalid-nested-object.xml");
+        client
+            .rxRequest(POST, "/test")
+            .flatMap(request -> request.rxSend(Buffer.buffer(input)))
+            .flatMapPublisher(response -> {
+                assertThat(response.statusCode()).isEqualTo(500);
+                return response.toFlowable();
+            })
+            .test()
+            .await()
+            .assertComplete()
+            .assertNoErrors();
+    }
+}
