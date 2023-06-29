@@ -65,7 +65,7 @@ public class XmlToJsonTransformationPolicyV4IntegrationTest {
 
     @Nested
     @GatewayTest
-    class HttpProxy extends XmlToJsonTransformationPolicyIntegrationTest {
+    class HttpProxy extends XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest {
 
         @Override
         public void configureEntrypoints(Map<String, EntrypointConnectorPlugin<?, ?>> entrypoints) {

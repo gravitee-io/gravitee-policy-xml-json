@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
  */
 @GatewayTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class XmlToJsonTransformationPolicyIntegrationTest
+public class XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest
     extends AbstractPolicyTest<XmlToJsonTransformationPolicy, XmlToJsonTransformationPolicyConfiguration> {
 
     @Test
