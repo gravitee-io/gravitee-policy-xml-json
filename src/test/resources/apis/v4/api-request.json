@@ -1,66 +1,65 @@
 {
-  "id": "api-request",
-  "name": "api-request",
-  "apiVersion": "1.0",
-  "definitionVersion": "4.0.0",
-  "type": "proxy",
-  "analytics": {},
-  "description": "api-request",
-  "properties" : [],
-  "listeners": [
-    {
-      "type": "http",
-      "paths": [
+    "id": "api-request",
+    "name": "api-request",
+    "apiVersion": "1.0",
+    "definitionVersion": "4.0.0",
+    "type": "proxy",
+    "analytics": {},
+    "description": "api-request",
+    "properties": [],
+    "listeners": [
         {
-          "path": "/test"
+            "type": "http",
+            "paths": [
+                {
+                    "path": "/test"
+                }
+            ],
+            "entrypoints": [
+                {
+                    "type": "http-proxy"
+                }
+            ]
         }
-      ],
-      "entrypoints": [
+    ],
+    "endpointGroups": [
         {
-          "type": "http-proxy"
+            "name": "default",
+            "type": "http-proxy",
+            "endpoints": [
+                {
+                    "name": "default",
+                    "type": "http-proxy",
+                    "configuration": {
+                        "target": "http://localhost:8080/team"
+                    }
+                }
+            ]
         }
-      ]
-    }
-  ],
-  "endpointGroups": [
-    {
-      "name": "default",
-      "type": "http-proxy",
-      "endpoints": [
+    ],
+    "flows": [
         {
-          "name": "default",
-          "type": "http-proxy",
-          "configuration": {
-            "target": "http://localhost:8080/team"
-          }
+            "name": "flow-1",
+            "enabled": true,
+            "selectors": [
+                {
+                    "type": "http",
+                    "path": "/",
+                    "pathOperator": "STARTS_WITH"
+                }
+            ],
+            "request": [
+                {
+                    "name": "Xml to Json",
+                    "description": "",
+                    "enabled": true,
+                    "policy": "xml-json",
+                    "configuration": {}
+                }
+            ],
+            "response": [],
+            "subscribe": [],
+            "publish": []
         }
-      ]
-    }
-  ],
-  "flows": [
-    {
-      "name": "flow-1",
-      "enabled": true,
-      "selectors": [
-        {
-          "type": "http",
-          "path": "/",
-          "pathOperator": "STARTS_WITH"
-        }
-      ],
-      "request": [
-        {
-          "name": "Xml to Json",
-          "description": "",
-          "enabled": true,
-          "policy": "xml-json",
-          "configuration": {
-          }
-        }
-      ],
-      "response": [],
-      "subscribe": [],
-      "publish": []
-    }
-  ]
+    ]
 }
