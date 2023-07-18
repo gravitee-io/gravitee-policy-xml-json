@@ -24,7 +24,6 @@ import io.gravitee.definition.model.ExecutionMode;
 import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest;
 import io.vertx.rxjava3.core.buffer.Buffer;
 import io.vertx.rxjava3.core.http.HttpClient;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -23,32 +23,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.gravitee.gateway.api.ExecutionContext;
-import io.gravitee.gateway.api.ExecutionContext;
-import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Request;
 import io.gravitee.gateway.api.Response;
-import io.gravitee.gateway.api.Response;
-import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.buffer.Buffer;
 import io.gravitee.gateway.api.http.HttpHeaderNames;
-import io.gravitee.gateway.api.http.HttpHeaderNames;
-import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.http.HttpHeaders;
 import io.gravitee.gateway.api.stream.ReadWriteStream;
-import io.gravitee.gateway.api.stream.ReadWriteStream;
 import io.gravitee.node.api.configuration.Configuration;
-import io.gravitee.node.api.configuration.Configuration;
-import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.api.PolicyChain;
 import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicy;
 import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.reporter.api.http.Metrics;
-import io.gravitee.reporter.api.http.Metrics;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.time.Instant;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,6 +45,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.time.Instant;
 
 /**
  * @author Yann TAVERNIER (yann.tavernier at graviteesource.com)

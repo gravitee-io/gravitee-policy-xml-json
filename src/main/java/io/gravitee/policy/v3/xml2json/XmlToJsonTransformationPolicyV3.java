@@ -33,7 +33,6 @@ import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyCo
 import io.gravitee.policy.xml2json.transformer.XML;
 import io.gravitee.policy.xml2json.utils.CharsetHelper;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
 /**
