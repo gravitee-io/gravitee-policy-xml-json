@@ -46,7 +46,7 @@
         <gravitee-reactor-message.version>1.0.1</gravitee-reactor-message.version>
 
         <swagger-parser.version>2.0.14</swagger-parser.version>
-        <slf4j.version>1.7.26</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <json-unit-assertj.version>3.0.0</json-unit-assertj.version>
 
         <json-schema-generator-maven-plugin.version>1.1.0</json-schema-generator-maven-plugin.version>
