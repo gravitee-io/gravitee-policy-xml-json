@@ -23,9 +23,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static io.vertx.core.http.HttpMethod.GET;
 import static io.vertx.core.http.HttpMethod.POST;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import io.gravitee.apim.gateway.tests.sdk.AbstractPolicyTest;
 import io.gravitee.apim.gateway.tests.sdk.annotations.DeployApi;
 import io.gravitee.apim.gateway.tests.sdk.annotations.GatewayTest;
@@ -69,7 +70,7 @@ public class XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest
             .assertComplete()
             .assertNoErrors();
 
-        wiremock.verify(1, postRequestedFor(urlPathEqualTo("/team")).withRequestBody(new EqualToPattern(expected)));
+        wiremock.verify(1, postRequestedFor(urlPathEqualTo("/team")).withRequestBody(new EqualToJsonPattern(expected, true, false)));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest
             .test()
             .await()
             .assertValue(buffer -> {
-                assertThat(buffer).hasToString(expected);
+                assertThatJson(buffer.toString()).isEqualTo(expected);
                 return true;
             })
             .assertComplete()

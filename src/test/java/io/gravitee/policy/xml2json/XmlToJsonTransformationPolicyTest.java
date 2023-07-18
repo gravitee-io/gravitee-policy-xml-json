@@ -19,6 +19,7 @@ import static io.gravitee.common.http.HttpStatusCode.BAD_REQUEST_400;
 import static io.gravitee.common.http.HttpStatusCode.INTERNAL_SERVER_ERROR_500;
 import static io.gravitee.policy.v3.xml2json.XmlToJsonTransformationPolicyV3.DEFAULT_MAX_DEPH;
 import static io.gravitee.policy.v3.xml2json.XmlToJsonTransformationPolicyV3.POLICY_XML_JSON_MAXDEPTH;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -44,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.function.Function;
+import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -119,7 +121,10 @@ class XmlToJsonTransformationPolicyTest {
 
         final TestObserver<Buffer> bodyObs = ((Maybe<Buffer>) onBodyCaptor.getValue().apply(Maybe.just(Buffer.buffer(input)))).test();
 
-        bodyObs.assertValue(buffer -> expected.equals(buffer.toString()));
+        bodyObs.assertValue(buffer -> {
+            assertThatJson(buffer.toString()).isEqualTo(expected);
+            return true;
+        });
         verifyHeaders(request.headers());
     }
 
@@ -199,7 +204,10 @@ class XmlToJsonTransformationPolicyTest {
 
         final TestObserver<Buffer> bodyObs = ((Maybe<Buffer>) onBodyCaptor.getValue().apply(Maybe.just(Buffer.buffer(input)))).test();
 
-        bodyObs.assertValue(buffer -> expected.equals(buffer.toString()));
+        bodyObs.assertValue(buffer -> {
+            assertThatJson(buffer.toString()).isEqualTo(expected);
+            return true;
+        });
         verifyHeaders(headers);
     }
 
@@ -255,7 +263,7 @@ class XmlToJsonTransformationPolicyTest {
         final TestObserver<Message> bodyObs = onMessageCaptor.getValue().apply(new DefaultMessage(input)).test();
 
         bodyObs.assertValue(message -> {
-            assertThat(expected).isEqualTo(message.content().toString());
+            assertThatJson(message.content().toString()).isEqualTo(expected);
             verifyHeaders(message.headers());
             return true;
         });
@@ -304,7 +312,7 @@ class XmlToJsonTransformationPolicyTest {
         final TestObserver<Message> bodyObs = onMessageCaptor.getValue().apply(new DefaultMessage(input)).test();
 
         bodyObs.assertValue(message -> {
-            assertThat(expected).isEqualTo(message.content().toString());
+            assertThatJson(message.content().toString()).isEqualTo(expected);
             verifyHeaders(message.headers());
             return true;
         });

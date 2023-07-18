@@ -15,6 +15,7 @@
  */
 package io.gravitee.policy.v3.xml2json;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -35,6 +36,10 @@ import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicy;
 import io.gravitee.policy.xml2json.configuration.PolicyScope;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.gravitee.reporter.api.http.Metrics;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.time.Instant;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +50,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.time.Instant;
 
 /**
  * @author Yann TAVERNIER (yann.tavernier at graviteesource.com)
@@ -277,7 +278,7 @@ class XmlToJsonTransformationPolicyV3Test {
     }
 
     private void assertResultingJsonObjectsAreEquals(String expected, Object resultBody) {
-        assertThat(resultBody).hasToString(expected);
+        assertThatJson(resultBody.toString()).isEqualTo(expected);
     }
 
     private String loadResource(String resource) throws IOException {
