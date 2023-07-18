@@ -149,7 +149,7 @@ public class XmlToJsonTransformationPolicyV4IntegrationTest {
                 .test()
                 .awaitDone(5, TimeUnit.SECONDS)
                 .assertValue(body -> {
-                    final JsonObject content = new JsonObject(body.toString());
+                    final JsonObject content = new JsonObject(body);
                     final JsonArray items = content.getJsonArray("items");
                     assertThat(items).hasSize(2);
                     items.forEach(item -> {
