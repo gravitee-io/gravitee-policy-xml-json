@@ -45,8 +45,7 @@
         <gravitee-entrypoint-http-get.version>1.0.0</gravitee-entrypoint-http-get.version>
         <gravitee-reactor-message.version>1.0.1</gravitee-reactor-message.version>
 
-        <swagger-parser.version>2.0.14</swagger-parser.version>
-        <slf4j.version>1.7.26</slf4j.version>
+        <swagger-parser.version>2.1.13</swagger-parser.version>
         <json-unit-assertj.version>3.0.0</json-unit-assertj.version>
 
         <json-schema-generator-maven-plugin.version>1.1.0</json-schema-generator-maven-plugin.version>
@@ -112,7 +111,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -249,6 +247,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
                 <configuration>
