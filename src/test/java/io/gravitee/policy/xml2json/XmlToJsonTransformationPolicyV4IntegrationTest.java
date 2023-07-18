@@ -17,6 +17,7 @@ package io.gravitee.policy.xml2json;
 
 import static io.vertx.core.http.HttpMethod.GET;
 import static io.vertx.core.http.HttpMethod.POST;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.graviteesource.entrypoint.http.get.HttpGetEntrypointConnectorFactory;
@@ -154,7 +155,7 @@ public class XmlToJsonTransformationPolicyV4IntegrationTest {
                     assertThat(items).hasSize(2);
                     items.forEach(item -> {
                         JsonObject message = (JsonObject) item;
-                        assertThat(message.getString("content")).isEqualTo(expected);
+                        assertThatJson(message.getString("content")).isEqualTo(expected);
                         final JsonObject headers = message.getJsonObject("headers");
                         assertThat(headers.getJsonArray("Content-Type")).hasSize(1).contains("application/json;charset=UTF-8");
                         assertThat(headers.getJsonArray("Content-Length")).hasSize(1).contains("65");
@@ -249,7 +250,7 @@ public class XmlToJsonTransformationPolicyV4IntegrationTest {
                 .subject()
                 .test()
                 .assertValue(message -> {
-                    assertThat(message.content()).hasToString(expected);
+                    assertThatJson(message.content().toString()).isEqualTo(expected);
                     return true;
                 })
                 .dispose();
