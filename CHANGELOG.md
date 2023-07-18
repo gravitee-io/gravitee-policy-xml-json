@@ -1,3 +1,26 @@
+# [2.0.0](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.3...2.0.0) (2023-07-18)
+
+
+### Bug Fixes
+
+* use new execution engine ([230dcb1](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/230dcb196ca5eb637c27f155ffeda0d196b6a307))
+
+
+### chore
+
+* **deps:** update gravitee-parent ([24e44b0](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/24e44b0863659075efa262fc1b4b0bfd17b44a9f))
+
+
+### Features
+
+* migrate policy to support messages ([295343e](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/295343e5c94898f6c6ced39b0a7e4dcfaf7cd651))
+
+
+### BREAKING CHANGES
+
+* **deps:** require Java17
+* this version is using the latest dependencies introduced by gravitee 4.0
+
 # [2.0.0-alpha.2](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/2.0.0-alpha.1...2.0.0-alpha.2) (2023-06-29)
 
 
