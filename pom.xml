@@ -35,15 +35,15 @@
 
     <properties>
         <gravitee-apim.version>4.0.0-SNAPSHOT</gravitee-apim.version>
-        <gravitee-bom.version>5.0.0</gravitee-bom.version>
-        <gravitee-node.version>3.1.0-alpha.11</gravitee-node.version>
-        <gravitee-gateway-api.version>3.0.0-alpha.7</gravitee-gateway-api.version>
+        <gravitee-bom.version>6.0.3</gravitee-bom.version>
+        <gravitee-node.version>4.0.0</gravitee-node.version>
+        <gravitee-gateway-api.version>3.0.0</gravitee-gateway-api.version>
         <gravitee-policy-api.version>1.11.0</gravitee-policy-api.version>
         <gravitee-common.version>2.1.1</gravitee-common.version>
-        <gravitee-expression-language.version>2.2.1</gravitee-expression-language.version>
-        <gravitee-entrypoint-http-post.version>1.0.0-alpha.1</gravitee-entrypoint-http-post.version>
-        <gravitee-entrypoint-http-get.version>1.0.0-alpha.4</gravitee-entrypoint-http-get.version>
-        <gravitee-reactor-message.version>1.0.0-alpha.10</gravitee-reactor-message.version>
+        <gravitee-expression-language.version>3.0.0</gravitee-expression-language.version>
+        <gravitee-entrypoint-http-post.version>1.0.0</gravitee-entrypoint-http-post.version>
+        <gravitee-entrypoint-http-get.version>1.0.0</gravitee-entrypoint-http-get.version>
+        <gravitee-reactor-message.version>1.0.1</gravitee-reactor-message.version>
 
         <swagger-parser.version>2.0.14</swagger-parser.version>
         <slf4j.version>1.7.26</slf4j.version>
