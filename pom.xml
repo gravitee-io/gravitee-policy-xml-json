@@ -24,8 +24,8 @@
     <artifactId>gravitee-policy-xml-json</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
-    <name>Gravitee.io APIM - Policy - XSLT to JSON Transformation</name>
-    <description>Description of the XML to JSON Transformation  Gravitee Policy</description>
+    <name>Gravitee.io APIM - Policy - XML to JSON Transformation</name>
+    <description>Transform an XML payload to a JSON payload</description>
 
     <parent>
         <groupId>io.gravitee</groupId>
