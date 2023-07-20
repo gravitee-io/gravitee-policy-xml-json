@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/2.0.0...2.0.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* update policy description ([a08c369](https://github.com/gravitee-io/gravitee-policy-xml-json/commit/a08c3698fc1f20c1aa6f8cc9da3ca93c015c74ff))
+
 # [2.0.0](https://github.com/gravitee-io/gravitee-policy-xml-json/compare/1.8.3...2.0.0) (2023-07-18)
 
 
