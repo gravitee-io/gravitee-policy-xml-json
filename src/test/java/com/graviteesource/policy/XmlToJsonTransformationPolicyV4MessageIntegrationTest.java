@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.gravitee.policy.xml2json;
+package com.graviteesource.policy;
 
 import static io.vertx.core.http.HttpMethod.GET;
 import static io.vertx.core.http.HttpMethod.POST;
@@ -36,10 +36,9 @@ import io.gravitee.common.http.MediaType;
 import io.gravitee.gateway.api.http.HttpHeaderNames;
 import io.gravitee.gateway.reactive.reactor.v4.reactor.ReactorFactory;
 import io.gravitee.plugin.endpoint.EndpointConnectorPlugin;
-import io.gravitee.plugin.endpoint.http.proxy.HttpProxyEndpointConnectorFactory;
 import io.gravitee.plugin.endpoint.mock.MockEndpointConnectorFactory;
 import io.gravitee.plugin.entrypoint.EntrypointConnectorPlugin;
-import io.gravitee.plugin.entrypoint.http.proxy.HttpProxyEntrypointConnectorFactory;
+import io.gravitee.policy.xml2json.XmlToJsonTransformationPolicy;
 import io.gravitee.policy.xml2json.configuration.XmlToJsonTransformationPolicyConfiguration;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -62,57 +61,7 @@ import org.junit.jupiter.api.Test;
  * @author Yann TAVERNIER (yann.tavernier at graviteesource.com)
  * @author GraviteeSource Team
  */
-public class XmlToJsonTransformationPolicyV4IntegrationTest {
-
-    @Nested
-    @GatewayTest
-    class HttpProxy extends XmlToJsonTransformationPolicyV4EmulationEngineIntegrationTest {
-
-        @Override
-        public void configureEntrypoints(Map<String, EntrypointConnectorPlugin<?, ?>> entrypoints) {
-            entrypoints.putIfAbsent("http-proxy", EntrypointBuilder.build("http-proxy", HttpProxyEntrypointConnectorFactory.class));
-        }
-
-        @Override
-        public void configureEndpoints(Map<String, EndpointConnectorPlugin<?, ?>> endpoints) {
-            endpoints.putIfAbsent("http-proxy", EndpointBuilder.build("http-proxy", HttpProxyEndpointConnectorFactory.class));
-        }
-
-        @Override
-        @Test
-        @DeployApi("/apis/v4/api-request.json")
-        void should_post_xml_content_to_backend(HttpClient client) throws InterruptedException {
-            super.should_post_xml_content_to_backend(client);
-        }
-
-        @Override
-        @Test
-        @DeployApi("/apis/v4/api-request.json")
-        void should_return_bad_request_when_posting_invalid_json_to_gateway(HttpClient client) throws InterruptedException {
-            super.should_return_bad_request_when_posting_invalid_json_to_gateway(client);
-        }
-
-        @Override
-        @Test
-        @DeployApi("/apis/v4/api-response.json")
-        void should_get_json_content_from_backend(HttpClient client) throws InterruptedException {
-            super.should_get_json_content_from_backend(client);
-        }
-
-        @Override
-        @Test
-        @DeployApi("/apis/v4/api-response.json")
-        void should_return_internal_error_when_getting_invalid_xml_content_from_backend(HttpClient client) throws InterruptedException {
-            super.should_return_internal_error_when_getting_invalid_xml_content_from_backend(client);
-        }
-
-        @Override
-        @Test
-        @DeployApi("/apis/v4/api-request.json")
-        void should_return_internal_error_when_too_many_nested(HttpClient client) throws InterruptedException {
-            super.should_return_internal_error_when_too_many_nested(client);
-        }
-    }
+public class XmlToJsonTransformationPolicyV4MessageIntegrationTest {
 
     @Nested
     @GatewayTest
