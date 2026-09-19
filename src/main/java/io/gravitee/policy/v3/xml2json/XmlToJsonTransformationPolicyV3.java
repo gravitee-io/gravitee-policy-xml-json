@@ -65,8 +65,7 @@ public class XmlToJsonTransformationPolicyV3 {
         ) {
             Charset charset = CharsetHelper.extractCharset(response.headers());
 
-            return TransformableResponseStreamBuilder
-                .on(response)
+            return TransformableResponseStreamBuilder.on(response)
                 .chain(chain)
                 .contentType(APPLICATION_JSON)
                 .transform(map(charset, getMaxDepth(context)))
@@ -80,8 +79,7 @@ public class XmlToJsonTransformationPolicyV3 {
     public ReadWriteStream onRequestContent(Request request, PolicyChain chain, ExecutionContext context) {
         if (xmlToJsonTransformationPolicyConfiguration.getScope() == PolicyScope.REQUEST) {
             Charset charset = CharsetHelper.extractCharset(request.headers());
-            return TransformableRequestStreamBuilder
-                .on(request)
+            return TransformableRequestStreamBuilder.on(request)
                 .chain(chain)
                 .contentType(APPLICATION_JSON)
                 .transform(map(charset, getMaxDepth(context)))
@@ -104,8 +102,9 @@ public class XmlToJsonTransformationPolicyV3 {
 
     private int getMaxDepth(ExecutionContext context) {
         if (this.maxDepth == null) {
-            this.maxDepth =
-                context.getComponent(Configuration.class).getProperty(POLICY_XML_JSON_MAXDEPTH, Integer.class, DEFAULT_MAX_DEPH);
+            this.maxDepth = context
+                .getComponent(Configuration.class)
+                .getProperty(POLICY_XML_JSON_MAXDEPTH, Integer.class, DEFAULT_MAX_DEPH);
         }
         return maxDepth;
     }
