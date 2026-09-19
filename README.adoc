@@ -10,10 +10,11 @@ endif::[]
 == Compatibility matrix
 
 |===
-|Plugin version | APIM version
+| Plugin version | APIM            | Java version
 
-|1.x            | 3.x
-|2.x            | 4.0 to latest
+| 3.x            | 4.7.x to latest | 21
+| 2.x            | 4.0 to latest   | 17
+| 1.x            | 3.x             | 11
 |===
 
 == Phase
