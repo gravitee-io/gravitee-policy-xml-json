@@ -70,8 +70,10 @@ public class XmlToJsonOAIOperationVisitorTest {
         assertThat(policy).isNotEmpty();
         String configuration = policy.get().getConfiguration();
         assertThat(configuration).isNotNull();
-        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper()
-            .readValue(configuration, XmlToJsonTransformationPolicyConfiguration.class);
+        XmlToJsonTransformationPolicyConfiguration readConfig = new ObjectMapper().readValue(
+            configuration,
+            XmlToJsonTransformationPolicyConfiguration.class
+        );
         assertThat(readConfig.getScope()).isEqualTo(PolicyScope.RESPONSE);
     }
 }

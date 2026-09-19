@@ -85,8 +85,7 @@ class XmlToJsonTransformationPolicyV3Test {
                 Integer.class,
                 XmlToJsonTransformationPolicy.DEFAULT_MAX_DEPH
             )
-        )
-            .thenReturn(XmlToJsonTransformationPolicy.DEFAULT_MAX_DEPH);
+        ).thenReturn(XmlToJsonTransformationPolicy.DEFAULT_MAX_DEPH);
         when(executionContext.getComponent(Configuration.class)).thenReturn(config);
     }
 
@@ -181,8 +180,9 @@ class XmlToJsonTransformationPolicyV3Test {
         result.end();
 
         assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_TYPE);
-        assertThat(response.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0))
-            .isEqualTo(XmlToJsonTransformationPolicy.APPLICATION_JSON);
+        assertThat(response.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0)).isEqualTo(
+            XmlToJsonTransformationPolicy.APPLICATION_JSON
+        );
         assertThat(response.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
         assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_LENGTH);
     }
@@ -271,8 +271,9 @@ class XmlToJsonTransformationPolicyV3Test {
         result.end();
 
         assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_TYPE);
-        assertThat(response.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0))
-            .isEqualTo(XmlToJsonTransformationPolicy.APPLICATION_JSON);
+        assertThat(response.headers().getAll(HttpHeaderNames.CONTENT_TYPE).get(0)).isEqualTo(
+            XmlToJsonTransformationPolicy.APPLICATION_JSON
+        );
         assertThat(response.headers().names()).doesNotContain(HttpHeaderNames.TRANSFER_ENCODING);
         assertThat(response.headers().names()).contains(HttpHeaderNames.CONTENT_LENGTH);
     }
