@@ -42,7 +42,7 @@
         <gravitee-common.version>2.3.0</gravitee-common.version>
         <gravitee-expression-language.version>3.1.0</gravitee-expression-language.version>
         <gravitee-entrypoint-http-post.version>1.0.0</gravitee-entrypoint-http-post.version>
-        <gravitee-entrypoint-http-get.version>1.0.0</gravitee-entrypoint-http-get.version>
+        <gravitee-entrypoint-http-get.version>1.2.0</gravitee-entrypoint-http-get.version>
         <gravitee-reactor-message.version>1.0.3</gravitee-reactor-message.version>
 
         <swagger-parser.version>2.1.48</swagger-parser.version>
